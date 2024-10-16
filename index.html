@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glassmorphism Login with Animated Background</title>
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    /* Button styling for login buttons */
+    .toggleButton {
+      background: rgba(255, 235, 59, 0.2); /* Light yellow with transparency */
+      color: #ffeb3b; /* Yellow text color */
+      border: 1px solid rgba(255, 235, 59, 0.4); /* Border to match the glass effect */
+      padding: 10px 20px;
+      border-radius: 20px; /* Rounded corners */
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s; /* Smooth hover transition */
+      backdrop-filter: blur(10px); /* Glassmorphism effect */
+      font-weight: 600;
+      margin: 5px; /* Spacing between buttons */
+    }
+
+    .toggleButton:hover {
+      background: rgba(255, 235, 59, 0.6); /* Brighten background on hover */
+      color: #000; /* Dark text color for contrast */
+      transform: scale(1.05); /* Slightly enlarge the button on hover */
+      border-color: rgba(255, 235, 59, 0.8); /* Make the border more prominent */
+    }
+
+    .toggleButton:focus {
+      outline: none; /* Remove default outline on focus */
+      box-shadow: 0 0 10px rgba(255, 235, 59, 0.8); /* Add a glow effect on focus */
+    }
+
+    .signin .glass .inputBox input[type="text"],
+    .signin .glass .inputBox input[type="password"] {
+      cursor: text; /* Change cursor to text (I-beam) when hovering over the textboxes */
+    }
+  </style>
+</head>
+<body>
+  <section>
+    <div class="animated-bg">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    
+    <div class="signin">
+      <div class="glass" id="loginCard">
+        <div class="content" id="content">
+          <h2 id="loginTitle">User Login</h2>
+          <form id="loginForm">
+            <div class="inputBox">
+              <input type="text" name="username" required>
+              <span id="usernameLabel">Username</span>
+            </div>
+            <div class="inputBox">
+              <input type="password" name="password" required>
+              <span>Password</span>
+            </div>
+            <div class="links" id="userLinks">
+              <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+              <a href="#" id="signupLink">Sign Up</a>
+            </div>
+            <br>
+            <input type="hidden" name="userType" id="userType" value="user">
+            <div class="inputBox">
+              <input type="submit" value="Login" id="submitButton">
+            </div>
+          </form>
+          <div class="links">
+            <button class="toggleButton" id="userBtn">User Login</button>
+            <button class="toggleButton" id="adminBtn">Admin Login</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const userBtn = document.getElementById('userBtn');
+    const adminBtn = document.getElementById('adminBtn');
+    const loginTitle = document.getElementById('loginTitle');
+    const usernameLabel = document.getElementById('usernameLabel');
+    const userTypeField = document.getElementById('userType');
+    const submitButton = document.getElementById('submitButton');
+    const loginForm = document.getElementById('loginForm');
+    const signupLink = document.getElementById('signupLink');
+    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+
+    userBtn.addEventListener('click', () => {
+      loginTitle.textContent = 'User Login';
+      usernameLabel.textContent = 'Username';
+      userTypeField.value = 'user';
+      submitButton.value = 'Login';
+    });
+
+    adminBtn.addEventListener('click', () => {
+      loginTitle.textContent = 'Admin Login';
+      usernameLabel.textContent = 'Admin Username';
+      userTypeField.value = 'admin';
+      submitButton.value = 'Admin Login';
+    });
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.querySelector('input[name="username"]').value;
+      const password = document.querySelector('input[name="password"]').value;
+
+      try {
+        const response = await fetch('http://localhost:3001/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Store user role in local storage
+          localStorage.setItem('userRole', data.role);
+          
+          // Redirect based on the role
+          window.location.href = data.redirectUrl;
+        } else {
+          alert(data.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred during login');
+      }
+    });
+
+    signupLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.href = 'signup.html'; 
+    });
+
+    forgotPasswordLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.href = '/forgot-password';
+    });
+
+    // Function to check if user is logged in
+    function checkLoggedIn() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const logoutParam = urlParams.get('logout');
+
+      if (logoutParam === 'true') {
+        // User has just logged out, don't redirect
+        // Remove the logout parameter from the URL
+        window.history.replaceState({}, document.title, "/index.html");
+        return;
+      }
+
+      const userRole = localStorage.getItem('userRole');
+      if (userRole) {
+        // User is logged in, redirect based on role
+        const redirectUrl = userRole === 'admin' ? '/companyHome.html' : '/home.html';
+        window.location.href = redirectUrl;
+      }
+    }
+
+    // Check if user is logged in when the page loads
+    checkLoggedIn();
+
+    // Logout function
+    function logout() {
+      localStorage.removeItem('userRole');
+      window.location.href = '/index.html'; // Redirect to login page
+    }
+  </script>
+</body>
+</html>

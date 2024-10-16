@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Cars - CarCompare</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #e67e22;
+            --secondary-color: #d35400;
+            --accent-color: #f39c12;
+            --light-color: #fef9e7;
+            --dark-color: #34495e;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+        }
+        .navbar {
+            background-color: var(--dark-color);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .logo {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .nav-link {
+            color: var(--light-color) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-radius: 20px;
+            padding: 0.5rem 1rem !important;
+        }
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--primary-color);
+            color: var(--dark-color) !important;
+        }
+        .btn {
+            border-radius: 20px;
+            padding: 0.5rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: var(--dark-color);
+        }
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            color: var(--light-color);
+        }
+        .banner {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--light-color);
+            padding: 4rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+            border-radius: 0 0 50px 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        .card-header {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            border-radius: 20px 20px 0 0 !important;
+            padding: 1rem;
+        }
+        .footer {
+            background-color: var(--dark-color);
+            color: var(--light-color);
+            padding: 3rem 0;
+            border-radius: 50px 50px 0 0;
+            margin-top: 3rem;
+        }
+        .social-icons a {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            transition: all 0.3s ease;
+        }
+        .social-icons a:hover {
+            color: var(--accent-color);
+            transform: translateY(-5px);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        #carTable th, #carTable td {
+            vertical-align: middle;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .pagination button {
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <h1 class="logo">CarCompare</h1>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="companyHome.html">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">Manage Cars</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="locations.html">Locations</a>
+                        </li>
+                       
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="logoutButton">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="banner">
+        <div class="container glass-effect">
+            <h1 class="display-4 fw-bold mb-3">Manage Cars</h1>
+            <p class="lead">Add, edit, and delete car listings with ease.</p>
+        </div>
+    </div>
+
+    <main class="container my-5">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Search and Select</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search by name or ID">
+                    </div>
+                    <div class="col-md-6">
+                        <select id="carSelect" class="form-select">
+                            <option value="">Select a car</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Car Details</h5>
+            </div>
+            <div class="card-body">
+                <form id="carForm">
+                    <input type="hidden" id="carId">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="company" class="form-label">Company</label>
+                            <input type="text" class="form-control" id="company" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="price" class="form-label">Price</label>
+                            <input type="number" class="form-control" id="price" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="onRoadPrice" class="form-label">On Road Price</label>
+                            <input type="number" class="form-control" id="onRoadPrice" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="engine" class="form-label">Engine</label>
+                            <input type="text" class="form-control" id="engine" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="engineType" class="form-label">Engine Type</label>
+                            <input type="text" class="form-control" id="engineType" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="displacement" class="form-label">Displacement</label>
+                            <input type="text" class="form-control" id="displacement" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="power" class="form-label">Power</label>
+                            <input type="text" class="form-control" id="power" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="fuelType" class="form-label">Fuel Type</label>
+                            <input type="text" class="form-control" id="fuelType" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="mileage" class="form-label">Mileage</label>
+                            <input type="text" class="form-control" id="mileage" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="topSpeed" class="form-label">Top Speed</label>
+                            <input type="text" class="form-control" id="topSpeed" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="fuelTankCapacity" class="form-label">Fuel Tank Capacity</label>
+                            <input type="text" class="form-control" id="fuelTankCapacity" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="emissionNorm" class="form-label">Emission Norm</label>
+                            <input type="text" class="form-control" id="emissionNorm" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="frontSuspension" class="form-label">Front Suspension</label>
+                            <input type="text" class="form-control" id="frontSuspension" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="rearSuspension" class="form-label">Rear Suspension</label>
+                            <input type="text" class="form-control" id="rearSuspension" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="steeringType" class="form-label">Steering Type</label>
+                            <input type="text" class="form-control" id="steeringType" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="frontBrakeType" class="form-label">Front Brake Type</label>
+                            <input type="text" class="form-control" id="frontBrakeType" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="rearBrakeType" class="form-label">Rear Brake Type</label>
+                            <input type="text" class="form-control" id="rearBrakeType" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="tyreSize" class="form-label">Tyre Size</label>
+                            <input type="text" class="form-control" id="tyreSize" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="tyreType" class="form-label">Tyre Type</label>
+                            <input type="text" class="form-control" id="tyreType" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="wheelSize" class="form-label">Wheel Size</label>
+                            <input type="text" class="form-control" id="wheelSize" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="alloyWheelSizeFront" class="form-label">Alloy Wheel Size Front</label>
+                            <input type="text" class="form-control" id="alloyWheelSizeFront" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="alloyWheelSizeRear" class="form-label">Alloy Wheel Size Rear</label>
+                            <input type="text" class="form-control" id="alloyWheelSizeRear" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="imageUrl1" class="form-label">Image URL 1</label>
+                            <input type="url" class="form-control" id="imageUrl1" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="imageUrl2" class="form-label">Image URL 2 (Optional)</label>
+                            <input type="url" class="form-control" id="imageUrl2">
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary me-2">Save Car</button>
+                        <button type="button" id="updateBtn" class="btn btn-success me-2">Update Car</button>
+                        <button type="button" id="deleteBtn" class="btn btn-danger me-2">Delete Car</button>
+                        <button type="reset" class="btn btn-secondary">Clear Form</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Car List</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="carTable" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Company</th>
+                                <th>Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 class="mb-3">About CarCompare</h5>
+                    <p>We help users compare cars and choose the best one for them.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light">Privacy Policy</a></li>
+                        <li><a href="#" class="text-light">Terms of Service</a></li>
+                        <li><a href="#" class="text-light">FAQ</a></li>
+                        <li><a href="#" class="text-light">Contact Support</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">Connect With Us</h5>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-4 mb-3">
+            <p class="text-center mb-0">&copy; 2024 CarCompare. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const carForm = document.getElementById('carForm');
+            const searchInput = document.getElementById('searchInput'); 
+            const carSelect = document.getElementById('carSelect');
+            const updateBtn = document.getElementById('updateBtn');
+            const deleteBtn = document.getElementById('deleteBtn');
+            const carTable = document.getElementById('carTable').getElementsByTagName('tbody')[0];
+            const itemsPerPage = 10;
+            let currentPage = 1;
+            let allCars = [];
+
+            async function fetchAllCars() {
+                try {
+                    const response = await fetch('http://localhost:3001/api/cars');
+                    allCars = await response.json();
+                    return allCars;
+                } catch (error) {
+                    console.error('Error fetching cars:', error);
+                    return [];
+                }
+            }
+
+            function renderCarTable(cars, page = 1) {
+                const startIndex = (page - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                const paginatedCars = cars.slice(startIndex, endIndex);
+
+                carTable.innerHTML = '';
+                paginatedCars.forEach(car => {
+                    const row = carTable.insertRow();
+                    row.innerHTML = `
+                        <td>${car.id}</td>
+                        <td>${car.name}</td>
+                        <td>${car.company}</td>
+                        <td>${car.price}</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary edit-btn" data-id="${car.id}">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn btn-sm btn-danger delete-btn" data-id="${car.id}">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </td>
+                    `;
+                });
+
+                renderPagination(cars.length, page);
+            }
+
+            function renderPagination(totalItems, currentPage) {
+                const totalPages = Math.ceil(totalItems / itemsPerPage);
+                const paginationContainer = document.createElement('div');
+                paginationContainer.className = 'pagination mt-3';
+                
+                paginationContainer.innerHTML = `
+                    <button class="btn btn-secondary" id="prevPage" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>
+                    <span class="mx-3">Page ${currentPage} of ${totalPages}</span>
+                    <button class="btn btn-secondary" id="nextPage" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>
+                `;
+
+                const tableContainer = document.querySelector('.table-responsive');
+                const existingPagination = tableContainer.querySelector('.pagination');
+                if (existingPagination) {
+                    existingPagination.remove();
+                }
+                tableContainer.appendChild(paginationContainer);
+
+                document.getElementById('prevPage').addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        renderCarTable(allCars, currentPage - 1);
+                    }
+                });
+
+                document.getElementById('nextPage').addEventListener('click', () => {
+                    if (currentPage < totalPages) {
+                        renderCarTable(allCars, currentPage + 1);
+                    }
+                });
+            }
+
+            function updateCarSelect(cars) {
+                carSelect.innerHTML = '<option value="">Select a car</option>';
+                cars.forEach(car => {
+                    const option = document.createElement('option');
+                    option.value = car.id;
+                    option.textContent = `${car.name} (${car.company})`;
+                    carSelect.appendChild(option);
+                });
+            }
+
+            async function fetchCarById(id) {
+                try {
+                    const response = await fetch(`http://localhost:3001/api/cars/${id}`);
+                    const car = await response.json();
+                    return car;
+                } catch (error) {
+                    console.error('Error fetching car:', error);
+                    return null;
+                }
+            }
+
+            function fillFormFields(car) {
+                Object.keys(car).forEach(key => {
+                    const input = document.getElementById(key);
+                    if (input) {
+                        if (key === 'price' || key === 'onRoadPrice') {
+                            input.value = parseFloat(car[key].replace('₹', '').replace(/,/g, ''));
+                        } else {
+                            input.value = car[key];
+                        }
+                    }
+                });
+                // Set the carId hidden input
+                document.getElementById('carId').value = car.id;
+            }
+
+            carForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const formData = new FormData(carForm);
+                const carData = Object.fromEntries(formData.entries());
+                
+
+                carData.price = `₹${parseFloat(carData.price).toLocaleString('en-IN')}`;
+                carData.onRoadPrice = `₹${parseFloat(carData.onRoadPrice).toLocaleString('en-IN')}`;
+                
+                try {
+                    const response = await fetch('http://localhost:3001/api/cars', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(carData),
+                    });
+                    const result = await response.json();
+                    console.log('Car created:', result);
+
+                    const cars = await fetchAllCars();
+                    renderCarTable(cars);
+                    updateCarSelect(cars);
+                    carForm.reset();
+                } catch (error) {
+                    console.error('Error creating car:', error);
+                }
+            });
+
+
+            updateBtn.addEventListener('click', async function() {
+                const carId = document.getElementById('carId').value;
+                if (!carId) {
+                    alert('Please select a car to update');
+                    return;
+                }
+                const formData = new FormData(carForm);
+                const carData = Object.fromEntries(formData.entries());
+                
+                try {
+                    const response = await fetch(`http://localhost:3001/api/cars/${carId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(carData),
+                    });
+                    const result = await response.json();
+                    console.log('Car updated:', result);
+                    // Refresh the car list
+                    const cars = await fetchAllCars();
+                    renderCarTable(cars);
+                    updateCarSelect(cars);
+                    carForm.reset();
+                } catch (error) {
+                    console.error('Error updating car:', error);
+                }
+            });
+
+
+            deleteBtn.addEventListener('click', async function() {
+                const carId = document.getElementById('carId').value;
+                if (!carId) {
+                    alert('Please select a car to delete');
+                    return;
+                }
+                if (confirm('Are you sure you want to delete this car?')) {
+                    try {
+                        const response = await fetch(`http://localhost:3001/api/cars/${carId}`, {
+                            method: 'DELETE',
+                        });
+                        const result = await response.json();
+                        console.log('Car deleted:', result);
+
+                        const cars = await fetchAllCars();
+                        renderCarTable(cars);
+                        updateCarSelect(cars);
+                        carForm.reset();
+                    } catch (error) {
+                        console.error('Error deleting car:', error);
+                    }
+                }
+            });
+
+
+            searchInput.addEventListener('input', async function() {
+                const searchTerm = this.value.toLowerCase();
+                const filteredCars = allCars.filter(car => 
+                    car.name.toLowerCase().includes(searchTerm) || 
+                    car.id.toString().includes(searchTerm)
+                );
+                renderCarTable(filteredCars, 1);
+            });
+
+
+            carSelect.addEventListener('change', async function() {
+                const selectedCarId = this.value;
+                if (selectedCarId) {
+                    const car = await fetchCarById(selectedCarId);
+                    if (car) {
+                        fillFormFields(car);
+                    }
+                } else {
+                    carForm.reset();
+                }
+            });
+
+
+            carTable.addEventListener('click', async function(e) {
+                if (e.target.classList.contains('edit-btn') || e.target.parentElement.classList.contains('edit-btn')) {
+                    const carId = e.target.closest('.edit-btn').dataset.id;
+                    const car = await fetchCarById(carId);
+                    if (car) {
+                        fillFormFields(car);
+                        carSelect.value = carId;
+                    }
+                } else if (e.target.classList.contains('delete-btn') || e.target.parentElement.classList.contains('delete-btn')) {
+                    const carId = e.target.closest('.delete-btn').dataset.id;
+                    if (confirm('Are you sure you want to delete this car?')) {
+                        try {
+                            const response = await fetch(`http://localhost:3001/api/cars/${carId}`, {
+                                method: 'DELETE',
+                            });
+                            const result = await response.json();
+                            console.log('Car deleted:', result);
+
+                            const cars = await fetchAllCars();
+                            renderCarTable(cars);
+                            updateCarSelect(cars);
+                            carForm.reset();
+                        } catch (error) {
+                            console.error('Error deleting car:', error);
+                        }
+                    }
+                }
+            });
+
+            (async function() {
+                allCars = await fetchAllCars();
+                renderCarTable(allCars, 1);
+                updateCarSelect(allCars);
+            })();
+
+            const logoutButton = document.getElementById('logoutButton');
+            logoutButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.removeItem('userRole');
+                window.location.replace('/index.html?logout=true');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locations and Rental Cars - CarCompare</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #e67e22;
+            --secondary-color: #d35400;
+            --accent-color: #f39c12;
+            --light-color: #fef9e7;
+            --dark-color: #34495e;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+        }
+        .navbar {
+            background-color: var(--dark-color);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .logo {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .nav-link {
+            color: var(--light-color) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-radius: 20px;
+            padding: 0.5rem 1rem !important;
+        }
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--primary-color);
+            color: var(--dark-color) !important;
+        }
+        .btn {
+            border-radius: 20px;
+            padding: 0.5rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: var(--dark-color);
+        }
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            color: var(--light-color);
+        }
+        .banner {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--light-color);
+            padding: 4rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+            border-radius: 0 0 50px 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        .card-header {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            border-radius: 20px 20px 0 0 !important;
+            padding: 1rem;
+        }
+        .footer {
+            background-color: var(--dark-color);
+            color: var(--light-color);
+            padding: 3rem 0;
+            border-radius: 50px 50px 0 0;
+            margin-top: 3rem;
+        }
+        .social-icons a {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            transition: all 0.3s ease;
+        }
+        .social-icons a:hover {
+            color: var(--accent-color);
+            transform: translateY(-5px);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .status-counter {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .image-preview img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <h1 class="logo">CarCompare</h1>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="companyHome.html">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="manage_cars.html">Manage Cars</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">Locations</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="logoutButton">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="banner">
+        <div class="container glass-effect">
+            <h1 class="display-4 fw-bold mb-3">Locations and Rental Cars</h1>
+            <p class="lead">Manage your locations and rental car inventory with ease.</p>
+        </div>
+    </div>
+
+    <main class="container my-5">
+        <div class="status-counter">
+            <h3>Total Locations: <span id="locationCount">0</span></h3>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <button id="showAddLocationForm" class="btn btn-primary mb-3">Add Location</button>
+                <div id="addLocationFormContainer" style="display: none;">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Add Location</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="locationForm">
+                                <div class="mb-3">
+                                    <label for="locationName" class="form-label">Location Name</label>
+                                    <input type="text" class="form-control" id="locationName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="address" class="form-label">Address</label>
+                                    <input type="text" class="form-control" id="address" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="city" class="form-label">City</label>
+                                    <input type="text" class="form-control" id="city" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="state" class="form-label">State</label>
+                                    <input type="text" class="form-control" id="state" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="zipCode" class="form-label">Zip Code</label>
+                                    <input type="text" class="form-control" id="zipCode" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Add Location</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Location List</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul id="locationList" class="list-group"></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <button id="showAddCarForm" class="btn btn-primary mb-3">Add Car</button>
+                <div id="addCarFormContainer" style="display: none;">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Add Rental Car</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="rentalCarForm">
+                                <div class="mb-3">
+                                    <label for="carLocation" class="form-label">Location</label>
+                                    <select class="form-select" id="carLocation" required></select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="make" class="form-label">Make</label>
+                                    <input type="text" class="form-control" id="make" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="model" class="form-label">Model</label>
+                                    <input type="text" class="form-control" id="model" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="year" class="form-label">Year</label>
+                                    <input type="number" class="form-control" id="year" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="color" class="form-label">Color</label>
+                                    <input type="text" class="form-control" id="color" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="dailyRate" class="form-label">Daily Rate</label>
+                                    <input type="number" class="form-control" id="dailyRate" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="carImages" class="form-label">Car Images (min 4)</label>
+                                    <input type="file" class="form-control" id="carImages" multiple required>
+                                    <div id="imagePreview" class="image-preview"></div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Add Rental Car</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Search Rental Cars by Location</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="searchLocation" class="form-label">Select Location</label>
+                        <select class="form-select" id="searchLocation"></select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">&nbsp;</label>
+                        <button id="searchButton" class="btn btn-primary d-block">Search</button>
+                    </div>
+                </div>
+                <div id="searchResults" class="mt-4"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 class="mb-3">About CarCompare</h5>
+                    <p>We help users compare cars and choose the best one for them.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light">Privacy Policy</a></li>
+                        <li><a href="#" class="text-light">Terms of Service</a></li>
+                        <li><a href="#" class="text-light">FAQ</a></li>
+                        <li><a href="#" class="text-light">Contact Support</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">Connect With Us</h5>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-4 mb-3">
+            <p class="text-center mb-0">&copy; 2024 CarCompare. All rights reserved.</p>
+        </div>
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const locationForm = document.getElementById('locationForm');
+            const rentalCarForm = document.getElementById('rentalCarForm');
+            const locationList = document.getElementById('locationList');
+            const carLocationSelect = document.getElementById('carLocation');
+            const searchLocationSelect = document.getElementById('searchLocation');
+            const searchButton = document.getElementById('searchButton');
+            const searchResults = document.getElementById('searchResults');
+            const locationCount = document.getElementById('locationCount');
+            const showAddLocationForm = document.getElementById('showAddLocationForm');
+            const addLocationFormContainer = document.getElementById('addLocationFormContainer');
+            const showAddCarForm = document.getElementById('showAddCarForm');
+            const addCarFormContainer = document.getElementById('addCarFormContainer');
+            const carImages = document.getElementById('carImages');
+            const imagePreview = document.getElementById('imagePreview');
+
+            // Function to fetch all locations
+            async function fetchLocations() {
+                try {
+                    const response = await fetch('http://localhost:3001/api/locations');
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error fetching locations:', error);
+                    return [];
+                }
+            }
+
+            // Function to render location list
+            function renderLocationList(locations) {
+                locationList.innerHTML = '';
+                locations.forEach(location => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item';
+                    li.textContent = `${location.name} - ${location.city}, ${location.state}`;
+                    locationList.appendChild(li);
+                });
+            }
+
+            // Function to update location dropdowns
+            function updateLocationDropdowns(locations) {
+                carLocationSelect.innerHTML = '';
+                searchLocationSelect.innerHTML = '';
+                locations.forEach(location => {
+                    const option = document.createElement('option');
+                    option.value = location._id;
+                    option.textContent = location.name;
+                    carLocationSelect.appendChild(option.cloneNode(true));
+                    searchLocationSelect.appendChild(option);
+                });
+            }
+
+            // Update location count
+            function updateLocationCount(count) {
+                locationCount.textContent = count;
+            }
+
+            // Toggle add location form
+            showAddLocationForm.addEventListener('click', function() {
+                addLocationFormContainer.style.display = addLocationFormContainer.style.display === 'none' ? 'block' : 'none';
+            });
+
+            // Toggle add car form
+            showAddCarForm.addEventListener('click', function() {
+                addCarFormContainer.style.display = addCarFormContainer.style.display === 'none' ? 'block' : 'none';
+            });
+
+            // Image preview
+            carImages.addEventListener('change', function(e) {
+                imagePreview.innerHTML = '';
+                for (let i = 0; i < e.target.files.length; i++) {
+                    const file = e.target.files[i];
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    imagePreview.appendChild(img);
+                }
+            });
+
+            // Event listener for location form submission
+            locationForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const locationData = {
+                    name: document.getElementById('locationName').value,
+                    address: document.getElementById('address').value,
+                    city: document.getElementById('city').value,
+                    state: document.getElementById('state').value,
+                    zipCode: document.getElementById('zipCode').value,
+                };
+                try {
+                    const response = await fetch('http://localhost:3001/api/locations', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(locationData),
+                    });
+                    const result = await response.json();
+                    console.log('Location created:', result);
+                    const locations = await fetchLocations();
+                    renderLocationList(locations);
+                    updateLocationDropdowns(locations);
+                    locationForm.reset();
+                    updateLocationCount(locations.length);
+                } catch (error) {
+                    console.error('Error creating location:', error);
+                }
+            });
+
+            // Event listener for rental car form submission
+            rentalCarForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const formData = new FormData(rentalCarForm);
+                formData.append('location', document.getElementById('carLocation').value);
+                
+                try {
+                    const response = await fetch('http://localhost:3001/api/rental-cars', {
+                        method: 'POST',
+                        body: formData,
+                    });
+                    const result = await response.json();
+                    console.log('Rental car created:', result);
+                    rentalCarForm.reset();
+                    imagePreview.innerHTML = '';
+                } catch (error) {
+                    console.error('Error creating rental car:', error);
+                }
+            });
+
+            // Event listener for search button
+            searchButton.addEventListener('click', async function() {
+                const locationId = searchLocationSelect.value;
+                if (locationId) {
+                    try {
+                        const response = await fetch(`http://localhost:3001/api/rental-cars/location/${locationId}`);
+                        const cars = await response.json();
+                        searchResults.innerHTML = '';
+                        cars.forEach(car => {
+                            const carDiv = document.createElement('div');
+                            carDiv.className = 'card mb-3';
+                            carDiv.innerHTML = `
+                                <div class="card-body">
+                                    <h5 class="card-title">${car.make} ${car.model} (${car.year})</h5>
+                                    <p class="card-text">Color: ${car.color}</p>
+                                    <p class="card-text">Daily Rate: $${car.dailyRate}</p>
+                                    <p class="card-text">Available: ${car.available ? 'Yes' : 'No'}</p>
+                                </div>
+                            `;
+                            searchResults.appendChild(carDiv);
+                        });
+                    } catch (error) {
+                        console.error('Error searching rental cars:', error);
+                    }
+                }
+            });
+
+            // Initial load
+            (async function() {
+                const locations = await fetchLocations();
+                renderLocationList(locations);
+                updateLocationDropdowns(locations);
+                updateLocationCount(locations.length);
+            })();
+        });
+    </script>
+</body>
+</html>
